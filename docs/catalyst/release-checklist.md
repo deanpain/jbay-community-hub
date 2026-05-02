@@ -22,3 +22,8 @@ Use before tagging an open-source template drop.
 ## Communication
 
 - [ ] Maintain embargo on undisclosed vulnerabilities; publish CVE coordination via SECURITY policy after fixes ship.
+
+## Catalyst close-out (when filing Fund reports)
+
+- [ ] SoM evidence links still valid (GitHub release/tag, demo video if promised).
+- [ ] USDM milestone amounts match what was approved (no silent scope drift without amendment).

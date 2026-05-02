@@ -2,6 +2,8 @@
 
 Execution tracking lives in **Paperclip** (company **INKPIXEL**, issue prefix **INK**). Local dashboard (when running): `http://127.0.0.1:3100`.
 
+**Catalyst submission:** Use [`statement-of-milestones-template.md`](statement-of-milestones-template.md) for the **3 monthly milestones** and **USDM** budget (20/30/50 split). INK tasks are **internal** and supplement—not replace—the Statement of Milestones.
+
 | Artifact | Link |
 |----------|------|
 | **Project** | [J-Bay Community Hub](http://127.0.0.1:3100/INK/projects/j-bay-community-hub) |

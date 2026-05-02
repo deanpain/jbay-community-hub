@@ -2,7 +2,7 @@
 
 ## Context
 
-The J-Bay Community Hub is a **reusable civic MLS template**: mobile-first surfaces for **Education**, **Recreation**, and **Entertainment**, backed by Midnight **Compact** contracts with selective disclosure, integrated **Lace**, and **batched Altron/DHA** verification feeding Identus/Midnames credentials.
+The J-Bay Community Hub is a **reusable civic MLS template**: mobile-first surfaces for **Education**, **Recreation**, and **Entertainment**, backed by Midnight **Compact** contracts with selective disclosure, integrated **Lace**, and **batched Altron/DHA** verification feeding **Hyperledger Identus** (formerly Atala PRISM ecosystem lineage) and **Midnames** credentials (`did:midnight`). Collective governance and treasury mechanics are implemented per **Midnight Compact** (category fit); reviewer narratives may cite broader DAO precedents, but this repo does not scope additional voting engines unless explicitly added.
 
 ## Containers
 

@@ -36,6 +36,8 @@ pnpm --filter @jbay/mobile start
 
 - Architecture overview: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 - Catalyst milestones (checkbox + Paperclip IDs): [`docs/catalyst/milestone-checklist.md`](docs/catalyst/milestone-checklist.md)
+- **Catalyst Fund 15 / Midnight category:** USDM, prerequisites, reviewer framing — [`docs/catalyst/catalyst-fund15-requirements.md`](docs/catalyst/catalyst-fund15-requirements.md)
+- **Statement of Milestones (3 × monthly, 20/30/50 USDM split):** [`docs/catalyst/statement-of-milestones-template.md`](docs/catalyst/statement-of-milestones-template.md)
 - Paperclip roadmap (INK subtasks **INK-50**–**INK-87**, local dashboard links): [`docs/catalyst/paperclip-roadmap.md`](docs/catalyst/paperclip-roadmap.md)
 - Partner taxonomy: [`docs/partners/listing-taxonomy.md`](docs/partners/listing-taxonomy.md)
 - Contributing / security: [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md)

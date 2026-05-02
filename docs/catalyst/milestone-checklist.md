@@ -2,6 +2,16 @@
 
 Maps repository delivery to **Midnight Compact DApps**-style expectations (Compact, mobile UI, Lace, tests, public OSS). **Detailed execution tasks** with acceptance hints live in Paperclip — see [`paperclip-roadmap.md`](paperclip-roadmap.md) for **INK-xx** links (subtasks **INK-50**–**INK-87**).
 
+## Catalyst proposal vs internal tracking
+
+| Artifact | Purpose |
+|----------|---------|
+| **Statement of Milestones (SoM)** | **Exactly 3 monthly milestones**, USDM amounts, **20% / 30% / 50%** caps — required for Fund 15 Midnight category formatting. See [`statement-of-milestones-template.md`](statement-of-milestones-template.md). |
+| **Fund rules & prerequisites** | USDM funding, reviewer criteria, wallet / Keychain / reporting — see [`catalyst-fund15-requirements.md`](catalyst-fund15-requirements.md). |
+| **INK subtasks** | Day-to-day engineering breakdown; **does not** replace SoM evidence for reviewers. |
+
+Legacy budget discussions in **ADA** must be **converted to USDM** for submission (see fund requirements doc).
+
 ## Phase 1 — Weeks 1–4 (Core MLS + Lace groundwork)
 
 **Paperclip:** [INK-44](http://127.0.0.1:3100/INK/issues/INK-44) · Subtasks INK-50–INK-57
