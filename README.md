@@ -36,6 +36,7 @@ pnpm --filter @jbay/mobile start
 
 - Architecture overview: [`docs/architecture/overview.md`](docs/architecture/overview.md)
 - ADR 0003 — Lace + Expo + Metro wallet path (spike pending): [`docs/adr/0003-lace-expo-metro-wallet-integration.md`](docs/adr/0003-lace-expo-metro-wallet-integration.md)
+- Lace spike checklist (device + simulator): [`docs/runbooks/lace-spike.md`](docs/runbooks/lace-spike.md)
 - Catalyst milestones (checkbox + Paperclip IDs): [`docs/catalyst/milestone-checklist.md`](docs/catalyst/milestone-checklist.md)
 - **Catalyst Fund 15 / Midnight category:** USDM, prerequisites, reviewer framing — [`docs/catalyst/catalyst-fund15-requirements.md`](docs/catalyst/catalyst-fund15-requirements.md)
 - **Statement of Milestones (3 × monthly, 20/30/50 USDM split):** [`docs/catalyst/statement-of-milestones-template.md`](docs/catalyst/statement-of-milestones-template.md)

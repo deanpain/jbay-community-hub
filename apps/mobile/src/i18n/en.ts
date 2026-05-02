@@ -20,4 +20,9 @@ export const en = {
     "No listings in this tab yet — add seed data or enable the tab in municipality config.",
   a11yBackToListings: "Back to listings",
   a11yOpenListing: "Opens listing details",
+  walletChipLabel: "Wallet",
+  walletPlaceholderTitle: "Wallet connect — spike in progress",
+  walletPlaceholderBody:
+    "Lace is not wired yet. Follow docs/runbooks/lace-spike.md on this machine or in the repo, then update ADR 0003.",
+  a11yWalletChip: "Wallet connection status — integration pending",
 } as const;

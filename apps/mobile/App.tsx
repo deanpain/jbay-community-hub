@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useMemo, useState } from "react";
 import {
+  Alert,
   FlatList,
   Pressable,
   SafeAreaView,
@@ -47,8 +48,21 @@ export default function App() {
     <SafeAreaView style={styles.safe}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <Text style={styles.title}>{pilotName}</Text>
-        <Text style={styles.subtitle}>{strings.hubTagline}</Text>
+        <View style={styles.headerMain}>
+          <Text style={styles.title}>{pilotName}</Text>
+          <Text style={styles.subtitle}>{strings.hubTagline}</Text>
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={strings.a11yWalletChip}
+          hitSlop={12}
+          onPress={() =>
+            Alert.alert(strings.walletPlaceholderTitle, strings.walletPlaceholderBody)
+          }
+          style={styles.walletChip}
+        >
+          <Text style={styles.walletChipText}>{strings.walletChipLabel}</Text>
+        </Pressable>
       </View>
 
       <View style={styles.tabs}>
@@ -138,10 +152,31 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 12,
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomColor: colors.surface,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  headerMain: {
+    flex: 1,
+    minWidth: 0,
+  },
+  walletChip: {
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: colors.surface,
+  },
+  walletChipText: {
+    color: colors.accent,
+    fontWeight: "700",
+    fontSize: 14,
   },
   title: {
     color: colors.textPrimary,

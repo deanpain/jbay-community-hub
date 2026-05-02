@@ -31,3 +31,4 @@ Constraints:
 
 - Repository README — stack decisions table.
 - Catalyst milestone checklist — Phase 1 Lace groundwork (`docs/catalyst/milestone-checklist.md`).
+- Spike procedure & checklist: [`docs/runbooks/lace-spike.md`](../runbooks/lace-spike.md).

@@ -26,4 +26,6 @@ Document concrete threats (sybil, bribery, custody loss, batch processor comprom
 ## References
 
 - Identity batching ADR: [`docs/adr/0001-async-identity-batch-altron-dha.md`](../adr/0001-async-identity-batch-altron-dha.md)
+- Lace + Expo ADR: [`docs/adr/0003-lace-expo-metro-wallet-integration.md`](../adr/0003-lace-expo-metro-wallet-integration.md)
+- Lace spike runbook: [`docs/runbooks/lace-spike.md`](../runbooks/lace-spike.md)
 - Catalyst milestones: [`docs/catalyst/milestone-checklist.md`](../catalyst/milestone-checklist.md)
