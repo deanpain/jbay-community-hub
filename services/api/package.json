@@ -1,0 +1,16 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node --enable-source-maps dist/server.js",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "echo \"api: tests pending\""
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2"
+  }
+}

@@ -1,0 +1,5 @@
+// STUB — replace with valid Midnight Compact.
+// Module: treasury_and_governance
+// - Hold communal NIGHT (transparent rules) while shielding individual ballot choices.
+// - Delegate DUST spend so verified residents experience subsidized MLS interactions (self-funding DApp pattern).
+// - Expose auditable tallies + disbursement events without leaking voter linkage.

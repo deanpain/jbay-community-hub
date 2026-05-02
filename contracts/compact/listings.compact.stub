@@ -1,0 +1,6 @@
+// STUB — replace with valid Midnight Compact.
+// Module: listings (private MLS entries scoped by municipality config).
+// Responsibilities:
+// - Create/update/list shielded listing payloads per category (education | recreation | entertainment).
+// - Enforce verified-resident gate via ZK credential checks (see verified_resident.compact.stub).
+// Dependencies: Bulletin Board–style commitment graph once ported from templates/.

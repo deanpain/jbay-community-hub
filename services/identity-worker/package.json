@@ -1,0 +1,19 @@
+{
+  "name": "identity-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node --enable-source-maps dist/index.js",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "echo \"identity-worker: integration tests pending\""
+  },
+  "dependencies": {
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2"
+  }
+}

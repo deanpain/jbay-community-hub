@@ -1,0 +1,4 @@
+// STUB — replace with valid Midnight Compact.
+// Module: verified_resident_gate
+// - Verify selective-disclosure proofs that an actor holds a valid VC anchored via Identus / Midnames.
+// - Reject sybil attempts without storing PII on-chain (only proof validity + rotation nonces).

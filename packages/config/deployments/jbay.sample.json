@@ -1,0 +1,14 @@
+{
+  "id": "jbay-pilot",
+  "displayName": "J-Bay Community Hub",
+  "region": {
+    "country": "ZA",
+    "municipality": "Kouga Local Municipality",
+    "notes": "Pilot configuration — replace with template variables per deployment."
+  },
+  "tabs": {
+    "education": { "enabled": true },
+    "recreation": { "enabled": true },
+    "entertainment": { "enabled": true }
+  }
+}
