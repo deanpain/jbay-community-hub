@@ -19,6 +19,8 @@ import {
 } from "@jbay/shared";
 import { colors } from "@jbay/ui-tokens";
 
+import { strings } from "./src/i18n";
+
 const TAB_ORDER: HubTab[] = ["education", "recreation", "entertainment"];
 
 export default function App() {
@@ -46,7 +48,7 @@ export default function App() {
       <StatusBar style="light" />
       <View style={styles.header}>
         <Text style={styles.title}>{pilotName}</Text>
-        <Text style={styles.subtitle}>Education · Recreation · Entertainment</Text>
+        <Text style={styles.subtitle}>{strings.hubTagline}</Text>
       </View>
 
       <View style={styles.tabs}>
@@ -65,7 +67,9 @@ export default function App() {
               }}
               style={[styles.tab, active && styles.tabActive, !enabled && styles.tabDisabled]}
             >
-              <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>{key}</Text>
+              <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
+                {strings.tabs[key]}
+              </Text>
             </Pressable>
           );
         })}
@@ -75,31 +79,28 @@ export default function App() {
         <ScrollView contentContainerStyle={styles.body}>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Back to listings"
+            accessibilityLabel={strings.a11yBackToListings}
             onPress={() => setDetail(null)}
             style={styles.backRow}
           >
-            <Text style={styles.backText}>← Listings</Text>
+            <Text style={styles.backText}>{strings.backToListings}</Text>
           </Pressable>
           <Text style={styles.detailTitle}>{detail.title}</Text>
           <Text style={styles.orgLine}>{detail.partner.displayName}</Text>
           <Text style={styles.bodyText}>{detail.summary}</Text>
           {detail.schedule ? (
             <View style={styles.block}>
-              <Text style={styles.blockLabel}>Schedule</Text>
+              <Text style={styles.blockLabel}>{strings.scheduleHeading}</Text>
               <Text style={styles.bodyText}>{detail.schedule}</Text>
             </View>
           ) : null}
           {detail.proofRequirements ? (
             <View style={styles.block}>
-              <Text style={styles.blockLabel}>Proof & credentials</Text>
+              <Text style={styles.blockLabel}>{strings.proofHeading}</Text>
               <Text style={styles.bodyText}>{detail.proofRequirements}</Text>
             </View>
           ) : null}
-          <Text style={styles.stubNote}>
-            Shielded on-chain payloads and Lace connect land with Compact bindings — this screen is
-            mock MLS against shared types.
-          </Text>
+          <Text style={styles.stubNote}>{strings.detailStubNote}</Text>
         </ScrollView>
       ) : (
         <FlatList
@@ -107,14 +108,12 @@ export default function App() {
           data={visibleListings}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={
-            <Text style={styles.bodyText}>
-              No listings in this tab yet — add seed data or enable the tab in municipality config.
-            </Text>
+            <Text style={styles.bodyText}>{strings.emptyTab}</Text>
           }
           renderItem={({ item }) => (
             <Pressable
               accessibilityRole="button"
-              accessibilityHint="Opens listing details"
+              accessibilityHint={strings.a11yOpenListing}
               onPress={() => setDetail(item)}
               style={styles.card}
             >
