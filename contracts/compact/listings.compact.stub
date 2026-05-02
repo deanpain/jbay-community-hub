@@ -2,5 +2,6 @@
 // Module: listings (private MLS entries scoped by municipality config).
 // Responsibilities:
 // - Create/update/list shielded listing payloads per category (education | recreation | entertainment).
+// - Map stable listing identifiers (see `@jbay/shared` Listing.id) to shielded payloads — Bulletin Board pattern from Midnight templates.
 // - Enforce verified-resident gate via ZK credential checks (see verified_resident.compact.stub).
 // Dependencies: Bulletin Board–style commitment graph once ported from templates/.

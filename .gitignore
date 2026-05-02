@@ -16,3 +16,4 @@ coverage
 android/app/build
 ios/Pods
 apps/mobile/dist-web
+.gitnexus

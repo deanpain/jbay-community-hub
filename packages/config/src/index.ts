@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export { pilotJeffreysBayListings } from "./listings-seed.js";
+
 const municipalitySchema = z.object({
   id: z.string().min(1),
   displayName: z.string().min(1),
