@@ -8,6 +8,7 @@ Maps repository delivery to **Midnight Compact DApps**-style expectations (Compa
 |----------|---------|
 | **Statement of Milestones (SoM)** | **Exactly 3 monthly milestones**, USDM amounts, **20% / 30% / 50%** caps — required for Fund 15 Midnight category formatting. See [`statement-of-milestones-template.md`](statement-of-milestones-template.md). |
 | **Fund rules & prerequisites** | USDM funding, reviewer criteria, wallet / Keychain / reporting — see [`catalyst-fund15-requirements.md`](catalyst-fund15-requirements.md). |
+| **Human vs dev ops (Paperclip)** | **[INK-88](http://127.0.0.1:3100/INK/issues/INK-88)** umbrella + **[INK-89](http://127.0.0.1:3100/INK/issues/INK-89)–[INK-94](http://127.0.0.1:3100/INK/issues/INK-94)** (human) + **[INK-95](http://127.0.0.1:3100/INK/issues/INK-95)** (post-submit repo evidence). See [`paperclip-roadmap.md`](paperclip-roadmap.md). |
 | **INK subtasks** | Day-to-day engineering breakdown; **does not** replace SoM evidence for reviewers. |
 
 Legacy budget discussions in **ADA** must be **converted to USDM** for submission (see fund requirements doc).

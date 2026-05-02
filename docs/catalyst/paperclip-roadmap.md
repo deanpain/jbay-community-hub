@@ -10,6 +10,25 @@ Execution tracking lives in **Paperclip** (company **INKPIXEL**, issue prefix **
 | **GitHub** | https://github.com/deanpain/jbay-community-hub |
 | **Epic (parent)** | [INK-43 — Catalyst roadmap](http://127.0.0.1:3100/INK/issues/INK-43) |
 
+---
+
+## Catalyst Fund 15 — operations & submission — [INK-88](http://127.0.0.1:3100/INK/issues/INK-88)
+
+Program-level tasks for **USDM**, **Statement of Milestones (20/30/50)**, wallet/Keychain, and reviewer packaging. See [`catalyst-fund15-requirements.md`](catalyst-fund15-requirements.md) and [`statement-of-milestones-template.md`](statement-of-milestones-template.md).
+
+**Legend:** **[Human]** = requires the **proposer / project lead** (or designated person) — cannot be completed by an agent alone (wallets, identity, legal sign-off, recorded calls).
+
+| ID | Owner | Subtask |
+|----|--------|---------|
+| [INK-88](http://127.0.0.1:3100/INK/issues/INK-88) | *Umbrella* | Catalyst Fund 15 — program operations & submission (USDM / SoM) |
+| [INK-89](http://127.0.0.1:3100/INK/issues/INK-89) | **Human** | [Human] Cardano wallet: ≥5 ADA + browser-enabled wallet (registration fee) |
+| [INK-90](http://127.0.0.1:3100/INK/issues/INK-90) | **Human** | [Human] Catalyst Keychain — Proposer role + submission workspace |
+| [INK-91](http://127.0.0.1:3100/INK/issues/INK-91) | **Human** | [Human] Prior Catalyst grants — milestone reporting compliance |
+| [INK-92](http://127.0.0.1:3100/INK/issues/INK-92) | **Human** | [Human] Proof of Life — project lead availability (if funded) |
+| [INK-93](http://127.0.0.1:3100/INK/issues/INK-93) | **Human** | [Human] USDM budget + SoM (20/30/50) — lock & paste into Catalyst |
+| [INK-94](http://127.0.0.1:3100/INK/issues/INK-94) | **Human** | [Human] Team credentials & feasibility evidence (GitHub, past work) |
+| [INK-95](http://127.0.0.1:3100/INK/issues/INK-95) | **Engineering** | Dev: After submit — link final proposal + SoM in repo (evidence trail) |
+
 Phase issues use **sequential blockers**: Phase 2 waits on Phase 1, etc. Partner (**INK-48**) and tooling (**INK-49**) workstreams run in parallel unless you add explicit blockers in Paperclip.
 
 ---

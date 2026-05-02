@@ -62,6 +62,7 @@ Reviewers typically score **1–5** on:
 ## Relationship to internal roadmap
 
 - **Paperclip / INK tasks** = granular execution ([`paperclip-roadmap.md`](paperclip-roadmap.md)).
+- **Catalyst program operations (human steps)** = **[INK-88](http://127.0.0.1:3100/INK/issues/INK-88)** and children **INK-89–INK-95** (wallet, Keychain, compliance, USDM/SoM, team links, post-submit doc link). Items titled **[Human]** require the proposer — agents cannot complete them.
 - **Statement of Milestones** = **exactly 3** monthly buckets with **20% / 30% / 50%** USDM split — see [`statement-of-milestones-template.md`](statement-of-milestones-template.md).
 
 Do not confuse the two: Catalyst reviewers judge **SoM + evidence**, not INK subtask count.
