@@ -15,7 +15,6 @@
     "test": "echo \"@jbay/config: no tests yet\""
   },
   "dependencies": {
-    "@jbay/shared": "workspace:*",
     "zod": "^3.24.4"
   },
   "devDependencies": {

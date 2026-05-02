@@ -10,8 +10,13 @@ import {
   View,
 } from "react-native";
 
-import { pilotJeffreysBayListings, pilotJeffreysBaySample } from "@jbay/config";
-import { listingsForCategory, type HubTab, type Listing } from "@jbay/shared";
+import { pilotJeffreysBaySample } from "@jbay/config";
+import {
+  listingsForCategory,
+  pilotJeffreysBayListings,
+  type HubTab,
+  type Listing,
+} from "@jbay/shared";
 import { colors } from "@jbay/ui-tokens";
 
 const TAB_ORDER: HubTab[] = ["education", "recreation", "entertainment"];
