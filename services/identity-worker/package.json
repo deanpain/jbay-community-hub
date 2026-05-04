@@ -8,12 +8,13 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node --enable-source-maps dist/index.js",
     "build": "tsc -p tsconfig.build.json",
-    "test": "echo \"identity-worker: integration tests pending\""
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^3.24.4"
   },
   "devDependencies": {
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4"
   }
 }

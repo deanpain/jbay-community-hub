@@ -15,9 +15,10 @@
   "scripts": {
     "lint": "eslint src --max-warnings 0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "echo \"@jbay/shared: no tests yet\""
+    "test": "vitest run"
   },
   "devDependencies": {
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4"
   }
 }

@@ -12,6 +12,7 @@ export default tseslint.config(
       ".expo/**",
       "**/build/**",
       "**/.pnpm-store/**",
+      "**/vitest.config.ts",
     ],
   },
   {
