@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -20,6 +20,8 @@ import {
 } from "@jbay/shared";
 import { colors } from "@jbay/ui-tokens";
 
+import { ListingDraftModal } from "./src/components/ListingDraftModal";
+import { loadDraftListings, saveDraftListings } from "./src/lib/listingDraftsStorage";
 import { strings } from "./src/i18n";
 
 const TAB_ORDER: HubTab[] = ["education", "recreation", "entertainment"];
@@ -27,6 +29,10 @@ const TAB_ORDER: HubTab[] = ["education", "recreation", "entertainment"];
 export default function App() {
   const [tab, setTab] = useState<HubTab>("education");
   const [detail, setDetail] = useState<Listing | null>(null);
+  const [drafts, setDrafts] = useState<Listing[]>([]);
+  const [draftsHydrated, setDraftsHydrated] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formInitial, setFormInitial] = useState<Listing | null>(null);
 
   const pilotName = pilotJeffreysBaySample.displayName;
 
@@ -39,10 +45,55 @@ export default function App() {
     [],
   );
 
-  const visibleListings = useMemo(
-    () => listingsForCategory(pilotJeffreysBayListings, tab),
-    [tab],
-  );
+  useEffect(() => {
+    void loadDraftListings().then((loaded) => {
+      setDrafts(loaded);
+      setDraftsHydrated(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!draftsHydrated) return;
+    void saveDraftListings(drafts);
+  }, [drafts, draftsHydrated]);
+
+  const visibleListings = useMemo(() => {
+    const seed = listingsForCategory(pilotJeffreysBayListings, tab);
+    const local = listingsForCategory(drafts, tab);
+    return [...local, ...seed];
+  }, [tab, drafts]);
+
+  const openCreateDraft = useCallback(() => {
+    setFormInitial(null);
+    setFormOpen(true);
+  }, []);
+
+  const openEditDraft = useCallback((listing: Listing) => {
+    setFormInitial(listing);
+    setFormOpen(true);
+  }, []);
+
+  const onSaveDraft = useCallback((listing: Listing) => {
+    setDrafts((prev) => {
+      const without = prev.filter((x) => x.id !== listing.id);
+      return [...without, listing];
+    });
+    setDetail((d) => (d?.id === listing.id ? listing : d));
+  }, []);
+
+  const confirmDeleteDraft = useCallback((id: string) => {
+    Alert.alert(strings.draftDeleteConfirmTitle, strings.draftDeleteConfirmMessage, [
+      { text: strings.draftDeleteConfirmCancel, style: "cancel" },
+      {
+        text: strings.draftDeleteConfirmOk,
+        style: "destructive",
+        onPress: () => {
+          setDrafts((prev) => prev.filter((x) => x.id !== id));
+          setDetail((d) => (d?.id === id ? null : d));
+        },
+      },
+    ]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -99,6 +150,9 @@ export default function App() {
           >
             <Text style={styles.backText}>{strings.backToListings}</Text>
           </Pressable>
+          {detail.source === "draft" ? (
+            <Text style={styles.draftBadge}>{strings.draftBadge}</Text>
+          ) : null}
           <Text style={styles.detailTitle}>{detail.title}</Text>
           <Text style={styles.orgLine}>{detail.partner.displayName}</Text>
           <Text style={styles.bodyText}>{detail.summary}</Text>
@@ -114,34 +168,77 @@ export default function App() {
               <Text style={styles.bodyText}>{detail.proofRequirements}</Text>
             </View>
           ) : null}
+          {detail.source === "draft" ? (
+            <View style={styles.draftActions}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => openEditDraft(detail)}
+                style={[styles.draftBtn, styles.draftBtnPrimary]}
+              >
+                <Text style={styles.draftBtnPrimaryText}>{strings.draftEdit}</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => confirmDeleteDraft(detail.id)}
+                style={[styles.draftBtn, styles.draftBtnDanger]}
+              >
+                <Text style={styles.draftBtnDangerText}>{strings.draftDelete}</Text>
+              </Pressable>
+            </View>
+          ) : null}
           <Text style={styles.stubNote}>{strings.detailStubNote}</Text>
         </ScrollView>
       ) : (
-        <FlatList
-          contentContainerStyle={styles.listContent}
-          data={visibleListings}
-          keyExtractor={(item) => item.id}
-          ListEmptyComponent={
-            <Text style={styles.bodyText}>{strings.emptyTab}</Text>
-          }
-          renderItem={({ item }) => (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityHint={strings.a11yOpenListing}
-              onPress={() => setDetail(item)}
-              style={styles.card}
-            >
-              <Text style={styles.cardTitle} numberOfLines={2}>
-                {item.title}
-              </Text>
-              <Text style={styles.orgLine}>{item.partner.displayName}</Text>
-              <Text style={styles.cardSummary} numberOfLines={3}>
-                {item.summary}
-              </Text>
-            </Pressable>
-          )}
-        />
+        <View style={styles.listWrap}>
+          <FlatList
+            contentContainerStyle={styles.listContent}
+            data={visibleListings}
+            keyExtractor={(item) => item.id}
+            ListEmptyComponent={
+              <Text style={styles.bodyText}>{strings.emptyTab}</Text>
+            }
+            renderItem={({ item }) => (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityHint={strings.a11yOpenListing}
+                onPress={() => setDetail(item)}
+                style={styles.card}
+              >
+                {item.source === "draft" ? (
+                  <Text style={styles.cardDraftTag}>{strings.draftBadge}</Text>
+                ) : null}
+                <Text style={styles.cardTitle} numberOfLines={2}>
+                  {item.title}
+                </Text>
+                <Text style={styles.orgLine}>{item.partner.displayName}</Text>
+                <Text style={styles.cardSummary} numberOfLines={3}>
+                  {item.summary}
+                </Text>
+              </Pressable>
+            )}
+          />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={strings.a11yAddListing}
+            onPress={openCreateDraft}
+            style={styles.fab}
+          >
+            <Text style={styles.fabPlus}>+</Text>
+            <Text style={styles.fabLabel}>{strings.listingAdd}</Text>
+          </Pressable>
+        </View>
       )}
+
+      <ListingDraftModal
+        defaultCategory={tab}
+        initial={formInitial}
+        onClose={() => {
+          setFormOpen(false);
+          setFormInitial(null);
+        }}
+        onSave={onSaveDraft}
+        visible={formOpen}
+      />
     </SafeAreaView>
   );
 }
@@ -217,10 +314,13 @@ const styles = StyleSheet.create({
   tabLabelActive: {
     color: colors.accent,
   },
+  listWrap: {
+    flex: 1,
+  },
   listContent: {
     padding: 20,
     gap: 12,
-    paddingBottom: 32,
+    paddingBottom: 100,
   },
   body: {
     padding: 20,
@@ -234,6 +334,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.surface,
     gap: 6,
+  },
+  cardDraftTag: {
+    alignSelf: "flex-start",
+    fontSize: 11,
+    fontWeight: "700",
+    color: colors.background,
+    backgroundColor: colors.accent,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    overflow: "hidden",
   },
   cardTitle: {
     color: colors.textPrimary,
@@ -258,6 +369,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  draftBadge: {
+    alignSelf: "flex-start",
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors.background,
+    backgroundColor: colors.accent,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginBottom: 4,
+  },
   detailTitle: {
     color: colors.textPrimary,
     fontSize: 22,
@@ -275,11 +397,65 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 14,
   },
+  draftActions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 8,
+  },
+  draftBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  draftBtnPrimary: {
+    backgroundColor: colors.accent,
+  },
+  draftBtnPrimaryText: {
+    color: colors.background,
+    fontWeight: "700",
+  },
+  draftBtnDanger: {
+    borderWidth: 1,
+    borderColor: "#f87171",
+  },
+  draftBtnDangerText: {
+    color: "#f87171",
+    fontWeight: "700",
+  },
   stubNote: {
     color: colors.textMuted,
     fontSize: 12,
     lineHeight: 18,
     marginTop: 8,
     fontStyle: "italic",
+  },
+  fab: {
+    position: "absolute",
+    right: 20,
+    bottom: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: colors.accent,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    borderRadius: 999,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
+  },
+  fabPlus: {
+    color: colors.background,
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 24,
+  },
+  fabLabel: {
+    color: colors.background,
+    fontWeight: "700",
+    fontSize: 15,
   },
 });

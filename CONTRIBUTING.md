@@ -12,6 +12,7 @@ Thank you for contributing to the J-Bay Community Hub monorepo.
 1. Install dependencies: `pnpm install`
 2. Run checks locally: `pnpm lint`, `pnpm typecheck`, `pnpm contracts:test`
 3. Open a pull request with a clear description of intent and risk (especially for identity, wallet, or treasury changes).
+4. **Paperclip (INKPIXEL):** after substantive work lands on `main`, update matching **INK-** issues (status + short comment) so the board matches the repo. Local dashboard: `http://127.0.0.1:3100` — API `GET/PATCH /api/companies/{companyId}/issues` when running in `local_trusted` mode.
 
 ## Scope boundaries
 

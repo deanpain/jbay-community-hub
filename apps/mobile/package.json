@@ -15,6 +15,7 @@
     "@jbay/config": "workspace:*",
     "@jbay/shared": "workspace:*",
     "@jbay/ui-tokens": "workspace:*",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~54.0.33",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",

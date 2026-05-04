@@ -24,12 +24,16 @@ export interface PartnerRef {
   readonly displayName: string;
 }
 
+export type ListingSource = "seed" | "draft";
+
 /** MLS row aligned with `contracts/compact/listings.compact.stub` — app layer until Compact binds. */
 export interface Listing extends ListingDraft {
   readonly id: string;
   readonly partner: PartnerRef;
   readonly schedule?: string;
   readonly proofRequirements?: string;
+  /** `draft` = user-created in dev client (not on-chain). Omitted for pilot seed rows. */
+  readonly source?: ListingSource;
 }
 
 export function listingsForCategory(
