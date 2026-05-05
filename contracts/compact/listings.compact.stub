@@ -1,5 +1,12 @@
 // STUB — replace with valid Midnight Compact.
 // Module: listings (private MLS entries scoped by municipality config).
+//
+// Bulletin Board Template Mapping:
+// - Board ID -> Category Tab (Education, Recreation, Entertainment)
+// - Post ID -> Listing.id
+// - Post Payload -> { organisation, title, summary, schedule, proof_requirements }
+// - Poster Identity -> Shielded (verified-resident credential check)
+//
 // Responsibilities:
 // - Create/update/list shielded listing payloads per category (education | recreation | entertainment).
 // - Map stable listing identifiers (see `@jbay/shared` Listing.id) to shielded payloads — Bulletin Board pattern from Midnight templates.

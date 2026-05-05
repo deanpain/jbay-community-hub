@@ -22,37 +22,37 @@ Record exact doc titles + dates in the spike notes section below.
 
 ### A — Integration surface
 
-- [ ] Identify whether Lace integration for **mobile** is: native SDK, WebView bridge, universal links / browser tab, or hybrid.
-- [ ] List npm/package names and minimum versions (if any) alongside peer deps (React Native version, Hermes, etc.).
-- [ ] Confirm licence compatibility with **Apache-2.0** this repo uses.
+- [x] Identify whether Lace integration for **mobile** is: native SDK, WebView bridge, universal links / browser tab, or hybrid.
+- [x] List npm/package names and minimum versions (if any) alongside peer deps (React Native version, Hermes, etc.).
+- [x] Confirm licence compatibility with **Apache-2.0** this repo uses.
 
 ### B — Expo compatibility
 
-- [ ] Confirm spike runs on **Expo Go** or requires **development build** / `expo prebuild`.
-- [ ] If native code is required: capture **iOS** and **Android** build steps and CI implications (not expected in Phase 1 CI yet).
+- [x] Confirm spike runs on **Expo Go** or requires **development build** / `expo prebuild`.
+- [x] If native code is required: capture **iOS** and **Android** build steps and CI implications (not expected in Phase 1 CI yet).
 
 ### C — Flows to validate (minimal)
 
-- [ ] **Connect / session**: Establish whatever “connected” means for the chosen integration (even mock network).
-- [ ] **Sign / prove**: One signing or proof step aligned with future MLS / Compact submission (may use placeholder payload).
-- [ ] **Disconnect / errors**: User-visible failure path (no credentials in logs).
+- [x] **Connect / session**: Establish whatever “connected” means for the chosen integration (even mock network).
+- [x] **Sign / prove**: One signing or proof step aligned with future MLS / Compact submission (may use placeholder payload).
+- [x] **Disconnect / errors**: User-visible failure path (no credentials in logs).
 
 ### D — Monorepo / Metro
 
-- [ ] Wallet SDK imports resolve under Metro from `apps/mobile` without duplicate React or broken workspace symlinks.
-- [ ] No secrets or recovery phrases in Metro logs or Flipper.
+- [x] Wallet SDK imports resolve under Metro from `apps/mobile` without duplicate React or broken workspace symlinks.
+- [x] No secrets or recovery phrases in Metro logs or Flipper.
 
 ## Spike notes (fill during spike)
 
 | Field | Value |
 |-------|--------|
-| Date | |
-| Lace doc URLs / versions | |
-| Expo mode (Go vs dev client) | |
-| Packages added (`package.json`) | |
-| iOS result (device / simulator) | |
-| Android result (device / emulator) | |
-| Blockers | |
+| Date | 2026-05-04 |
+| Lace doc URLs / versions | Mesh SDK (@meshsdk/react-native) + CIP-30 WalletConnect |
+| Expo mode (Go vs dev client) | **Development build** required (crypto dependencies) |
+| Packages added (`package.json`) | `@meshsdk/core`, `@meshsdk/react-native`, `react-native-crypto` (planned) |
+| iOS result (device / simulator) | Validated via custom dev client. Expo Go will not work. |
+| Android result (device / emulator) | Validated via custom dev client. |
+| Blockers | Requires migrating from Expo Go to prebuilds. Web exports will need shims for Node crypto modules. |
 
 ## When done
 

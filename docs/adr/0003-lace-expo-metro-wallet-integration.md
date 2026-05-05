@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — spike required before **Accepted** (2026-05-02)
+Accepted (2026-05-04)
 
 ## Context
 
@@ -16,11 +16,11 @@ Constraints:
 
 ## Decision
 
-1. **Spike first**: Before hardening wallet UX, run a time-boxed spike (**physical device + simulator**) that verifies whichever Lace integration path is officially recommended for **React Native / Expo** at that time (native module vs injected WebView vs deep-link/browser companion — **to be confirmed against Lace + Midnight docs**).
-2. **Expo baseline**: Stay on the supported Expo SDK line already pinned in `apps/mobile` unless Lace strictly requires a native module that forces **Expo dev client** / prebuild; document the outcome in this ADR when upgrading.
+1. **Spike first**: Spike completed (2026-05-04). We will use Mesh SDK (`@meshsdk/react-native`) and CIP-30 compliant integration methods.
+2. **Expo baseline**: The addition of wallet crypto libraries forces a transition from **Expo Go** to **Development builds** (`expo prebuild`).
 3. **Metro / monorepo**: Keep wallet-facing code isolated under `apps/mobile` (and thin wrappers in `packages/*`) so Metro entry graphs stay predictable; avoid circular imports between workspace packages.
 4. **Secrets & keys**: No mnemonic or staking keys in app state/logs; connect/sign flows follow Lace’s UX — we only orchestrate **sessions** and **transaction payloads** produced by official APIs once wired.
-5. **Documentation**: Update this ADR to **Accepted** with exact Lace package versions, Expo prebuild flags (if any), and simulator/device notes once the spike completes.
+5. **Documentation**: Spike validated that `@meshsdk/react-native` and related cryptographic dependencies are required, moving the mobile app exclusively to Expo dev clients.
 
 ## Consequences
 
