@@ -1,0 +1,26 @@
+# Render Blueprint for J-Bay Community Hub — Identity Worker
+# Deploys the batch identity processor service
+# See: https://render.com/docs/blueprint-spec
+# Uses your existing Render account (same as Design QA Engine)
+
+services:
+  - type: web
+    name: jbay-identity-worker
+    runtime: docker
+    repo: https://github.com/deanpain/jbay-community-hub.git
+    rootDir: services/identity-worker
+    dockerfilePath: services/identity-worker/Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      - key: ALTROM_SANDBOX_ENABLED
+        value: "true"
+      - key: DHA_BATCH_ENDPOINT
+        sync: false
+      - key: DHA_API_KEY
+        sync: false
+      - key: IDENTUS_API_KEY
+        sync: false
+    healthCheckPath: /health
