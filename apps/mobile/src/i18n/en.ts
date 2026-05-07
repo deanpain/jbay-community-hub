@@ -4,6 +4,43 @@
 
 import type { HubTab } from "@jbay/shared";
 
+export interface AppStrings {
+  hubTagline: string;
+  tabs: Record<HubTab, string>;
+  backToListings: string;
+  scheduleHeading: string;
+  proofHeading: string;
+  detailStubNote: string;
+  emptyTab: string;
+  a11yBackToListings: string;
+  a11yOpenListing: string;
+  walletChipLabel: string;
+  walletPlaceholderTitle: string;
+  walletPlaceholderBody: string;
+  a11yWalletChip: string;
+  listingAdd: string;
+  a11yAddListing: string;
+  draftBadge: string;
+  draftEditTitle: string;
+  draftNewTitle: string;
+  draftFieldOrganisation: string;
+  draftFieldTitle: string;
+  draftFieldSummary: string;
+  draftFieldCategory: string;
+  draftOrgPlaceholder: string;
+  draftTitlePlaceholder: string;
+  draftSummaryPlaceholder: string;
+  draftDefaultOrganisation: string;
+  draftCancel: string;
+  draftSave: string;
+  draftEdit: string;
+  draftDelete: string;
+  draftDeleteConfirmTitle: string;
+  draftDeleteConfirmMessage: string;
+  draftDeleteConfirmOk: string;
+  draftDeleteConfirmCancel: string;
+}
+
 export const en = {
   hubTagline: "Education · Recreation · Entertainment",
   tabs: {

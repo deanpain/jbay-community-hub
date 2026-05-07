@@ -48,4 +48,4 @@ export const af: AppStrings = {
   draftDeleteConfirmMessage: "Dit verwyder die lyste slegs van hierdie toestel.",
   draftDeleteConfirmOk: "Verwyder",
   draftDeleteConfirmCancel: "Kanselleer",
-} as const;
+} satisfies Omit<AppStrings, never>;

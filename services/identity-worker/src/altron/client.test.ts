@@ -1,13 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { jest } from "vitest";
 
 import { describe, expect, it } from "vitest";
 
-import {
-  getAltronCredentials,
-  isSandboxMode,
-  type AltronCredentials,
-} from "./client.js";
+import { getAltronCredentials, isSandboxMode } from "./client.js";
 
 describe("Altron client", () => {
   describe("getAltronCredentials", () => {
