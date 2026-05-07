@@ -1,0 +1,19 @@
+{
+  "organisation": "Partner Name",
+  "tab": "education|recreation|entertainment",
+  "listings": [
+    {
+      "title": "Listing title",
+      "summary": "Short card description (1-2 sentences)",
+      "description": "Full description including eligibility, prerequisites, what to bring",
+      "subcategory": "Partner-defined subcategory",
+      "schedule_type": "weekly|seasonal|one_off|ongoing",
+      "schedule_detail": "E.g. 'Friday nights 6-8pm, school term only'",
+      "proof_requirements": ["verified_resident"],
+      "age_requirement": "",
+      "capacity": 0,
+      "contact": "Org contact name or department",
+      "seasonal_notes": ""
+    }
+  ]
+}

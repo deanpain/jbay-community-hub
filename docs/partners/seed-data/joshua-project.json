@@ -1,0 +1,47 @@
+[
+  {
+    "organisation": "Joshua Project",
+    "title": "Adult Literacy Programme",
+    "summary": "Build foundational reading and writing skills in English and Afrikaans.",
+    "description": "Weekly classes covering basic literacy, numeracy, and life skills. Open to adults 18+. Certification available upon completion.",
+    "category": "education",
+    "subcategory": "aet-modules",
+    "schedule_type": "weekly",
+    "schedule_detail": "Tuesdays & Thursdays 10am-12pm, term time",
+    "proof_requirements": ["verified_resident"],
+    "age_requirement": "18+",
+    "capacity": 20,
+    "contact": "Joshua Project Office",
+    "seasonal_notes": ""
+  },
+  {
+    "organisation": "Joshua Project",
+    "title": "Entrepreneurship Lab",
+    "summary": "Practical business skills for starting and growing a small enterprise.",
+    "description": "A 12-week programme covering business planning, financial literacy, marketing, and networking. Includes mentorship from local entrepreneurs.",
+    "category": "education",
+    "subcategory": "skills-training",
+    "schedule_type": "weekly",
+    "schedule_detail": "Wednesdays 2pm-5pm",
+    "proof_requirements": ["verified_resident", "enrolment_record"],
+    "age_requirement": "16+",
+    "capacity": 15,
+    "contact": "Joshua Project Office",
+    "seasonal_notes": ""
+  },
+  {
+    "organisation": "Joshua Project",
+    "title": "Work 4aLiving Pathways",
+    "summary": "Job readiness and placement support for young adults.",
+    "description": "CV writing, interview preparation, workplace etiquette, and direct referrals to local employers. Partnered with J-Bay business network.",
+    "category": "education",
+    "subcategory": "skills-training",
+    "schedule_type": "weekly",
+    "schedule_detail": "Fridays 9am-12pm",
+    "proof_requirements": ["verified_resident"],
+    "age_requirement": "18-35",
+    "capacity": 25,
+    "contact": "Joshua Project Office",
+    "seasonal_notes": ""
+  }
+]

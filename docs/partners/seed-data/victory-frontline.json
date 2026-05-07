@@ -1,0 +1,47 @@
+[
+  {
+    "organisation": "Victory Church / Frontline Youth",
+    "title": "Frontline Friday Nights",
+    "summary": "Weekly youth gathering with live music, talks, and community.",
+    "description": "Frontline Youth meets every Friday for an evening of live music, inspiring talks, games, and connection. Safe, supervised environment.",
+    "category": "entertainment",
+    "subcategory": "youth-events",
+    "schedule_type": "weekly",
+    "schedule_detail": "Fridays 6:30pm-9pm",
+    "proof_requirements": ["age_over_X"],
+    "age_requirement": "13-25",
+    "capacity": 100,
+    "contact": "Frontline Youth Team",
+    "seasonal_notes": ""
+  },
+  {
+    "organisation": "Victory Church / Frontline Youth",
+    "title": "Holiday Programmes",
+    "summary": "School holiday activities: sports, arts, life skills, and day trips.",
+    "description": "Full-day programmes during school holidays. Includes sports tournaments, creative workshops, and excursions. Lunch provided.",
+    "category": "entertainment",
+    "subcategory": "holiday-programmes",
+    "schedule_type": "seasonal",
+    "schedule_detail": "School holidays only (April, July, October, December)",
+    "proof_requirements": ["age_over_X"],
+    "age_requirement": "8-18",
+    "capacity": 60,
+    "contact": "Frontline Youth Team",
+    "seasonal_notes": "Dates announced 2 weeks before each holiday period."
+  },
+  {
+    "organisation": "Victory Church / Frontline Youth",
+    "title": "Community Cultural Night",
+    "summary": "Open-mic music, dance, poetry, and cultural performances.",
+    "description": "Quarterly community celebration showcasing local talent. All ages welcome. Free entry.",
+    "category": "entertainment",
+    "subcategory": "cultural",
+    "schedule_type": "one_off",
+    "schedule_detail": "Quarterly (Feb, May, Aug, Nov) — check calendar for next date",
+    "proof_requirements": ["none"],
+    "age_requirement": "",
+    "capacity": 200,
+    "contact": "Victory Church Office",
+    "seasonal_notes": ""
+  }
+]

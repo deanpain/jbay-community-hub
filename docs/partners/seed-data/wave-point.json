@@ -1,0 +1,62 @@
+[
+  {
+    "organisation": "Wave Point Foundation",
+    "title": "Surf Mentorship — Beginner Clinics",
+    "summary": "Learn to surf in a safe, supportive environment with experienced mentors.",
+    "description": "Weekly beginner surf clinics covering ocean safety, paddling, pop-ups, and wave selection. Wetsuits and boards provided. All ages welcome.",
+    "category": "recreation",
+    "subcategory": "surf-mentorship",
+    "schedule_type": "seasonal",
+    "schedule_detail": "Saturdays 7am-10am, peak winter season (May-August)",
+    "proof_requirements": ["age_over_X"],
+    "age_requirement": "8+",
+    "capacity": 12,
+    "contact": "Wave Point Foundation",
+    "seasonal_notes": "Winter swell season (May-Aug) is optimal. Summer sessions may run at different beaches with smaller swell."
+  },
+  {
+    "organisation": "Wave Point Foundation",
+    "title": "Surf Leadership Programme",
+    "summary": "Advanced surf training combined with leadership and mentorship skills.",
+    "description": "For experienced surfers who want to become assistant mentors. Includes advanced coaching, ocean safety certification, and mentoring techniques.",
+    "category": "recreation",
+    "subcategory": "surf-mentorship",
+    "schedule_type": "seasonal",
+    "schedule_detail": "Sundays 6am-11am, winter season (May-August)",
+    "proof_requirements": ["age_over_X", "certificate_holder"],
+    "age_requirement": "16+",
+    "capacity": 8,
+    "contact": "Wave Point Foundation",
+    "seasonal_notes": "Requires surf proficiency assessment before joining."
+  },
+  {
+    "organisation": "Wave Point Foundation",
+    "title": "Community Gardens Volunteering",
+    "summary": "Hands-on volunteering in Wave Point's community food gardens.",
+    "description": "Join the gardening team — planting, maintenance, harvesting, and composting. Produce goes to local feeding schemes. No experience needed.",
+    "category": "recreation",
+    "subcategory": "volunteering",
+    "schedule_type": "weekly",
+    "schedule_detail": "Mondays & Wednesdays 8am-11am",
+    "proof_requirements": ["verified_resident"],
+    "age_requirement": "12+",
+    "capacity": 20,
+    "contact": "Wave Point Gardens",
+    "seasonal_notes": ""
+  },
+  {
+    "organisation": "Wave Point Foundation",
+    "title": "Youth Sports Afternoons",
+    "summary": "Organised sports and outdoor activities for local youth.",
+    "description": "Weekly rotating sports: soccer, volleyball, touch rugby, and beach games. Equipment provided. Focus on teamwork and fitness.",
+    "category": "recreation",
+    "subcategory": "sports",
+    "schedule_type": "weekly",
+    "schedule_detail": "Thursdays 3pm-5pm, beachfront",
+    "proof_requirements": ["age_over_X"],
+    "age_requirement": "10-18",
+    "capacity": 30,
+    "contact": "Wave Point Foundation",
+    "seasonal_notes": "Summer sessions may shift to earlier/later times due to heat."
+  }
+]

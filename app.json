@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "J-Bay Community Hub",
+    "slug": "jbay-community-hub",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/app-icon.png",
+    "scheme": "jbayhub",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#0066CC"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jbaycommunityhub.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0066CC"
+      },
+      "package": "com.jbaycommunityhub.app"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
