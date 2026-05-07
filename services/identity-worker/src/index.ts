@@ -3,6 +3,8 @@
  * Production: wire credentials, encryption, and VC issuance per ADR-0001 + docs/runbooks/identus-vdr-anchor.md
  */
 
+import { randomUUID } from "node:crypto";
+
 import { z } from "zod";
 
 import {
@@ -10,10 +12,12 @@ import {
   type CredentialClaims,
 } from "./identus/client.js";
 import { createAltronProcessor, type AltronProcessorConfig } from "./altron/processor.js";
+import { logger } from "./logger.js";
 
 export type { AltronProcessorConfig };
 
 export { createAltronProcessor };
+export { logger };
 
 export const queuedVerificationSchema = z.object({
   correlationId: z.string().uuid(),
@@ -120,35 +124,44 @@ export function createInMemoryProcessor(): IdentityBatchProcessor {
       queue.push(item);
     },
     async flushPendingBatch(identusClient?: IdentusClient) {
+      const batchCorrelationId = randomUUID();
+      const log = logger.child({ batchCorrelationId, processor: "in_memory" });
+      const queueDepthStart = queue.length;
+      log.info({ queueDepthStart }, "flush.start");
       const n = queue.length;
       let a = 0;
       let r = 0;
       let y = 0;
-      for (const item of queue) {
-        const outcome = pickOutcome(item);
-        if (outcome === "accepted") {
-          a += 1;
-          if (identusClient) {
-            const claims: CredentialClaims = {
-              residentStatus: "verified",
-              verificationDate: new Date().toISOString(),
-              dhaReference: item.correlationId,
-            };
-            const holderDID = await identusClient.createHolderDID();
-            const vcResult = await identusClient.issueCredential(holderDID, claims);
-            if (vcResult.status === "issued") {
-              issuedVCs.push({
-                correlationId: item.correlationId,
-                vcId: vcResult.vcId,
-                issuedAt: vcResult.issuedAt,
-              });
+      try {
+        for (const item of queue) {
+          const outcome = pickOutcome(item);
+          if (outcome === "accepted") {
+            a += 1;
+            if (identusClient) {
+              const claims: CredentialClaims = {
+                residentStatus: "verified",
+                verificationDate: new Date().toISOString(),
+                dhaReference: item.correlationId,
+              };
+              const holderDID = await identusClient.createHolderDID();
+              const vcResult = await identusClient.issueCredential(holderDID, claims);
+              if (vcResult.status === "issued") {
+                issuedVCs.push({
+                  correlationId: item.correlationId,
+                  vcId: vcResult.vcId,
+                  issuedAt: vcResult.issuedAt,
+                });
+              }
             }
+          } else if (outcome === "rejected") {
+            r += 1;
+          } else {
+            y += 1;
           }
-        } else if (outcome === "rejected") {
-          r += 1;
-        } else {
-          y += 1;
         }
+      } catch (err) {
+        log.error({ err }, "flush.error");
+        throw err;
       }
       queue.length = 0;
       flushCount += 1;
@@ -157,6 +170,11 @@ export function createInMemoryProcessor(): IdentityBatchProcessor {
       rejected += r;
       retry += y;
       lastFlushAt = new Date().toISOString();
+      const queueDepthEnd = queue.length;
+      log.info(
+        { queueDepthEnd, submitted: n, accepted: a, rejected: r, retry: y },
+        "flush.complete",
+      );
       return { submitted: n, accepted: a, rejected: r, retry: y };
     },
     metrics() {
@@ -188,37 +206,47 @@ export function createScheduledInMemoryProcessor(
   let lastFlushAt: string | undefined;
   const issuedVCs: VCIssuanceRecord[] = [];
   const outcomeFor = config.dryRunOutcomeFor ?? (() => "accepted");
+  let wasWithinWindow: boolean | null = null;
 
   const flushQueue = async (identusClient?: IdentusClient): Promise<BatchResult> => {
+    const batchCorrelationId = randomUUID();
+    const log = logger.child({ batchCorrelationId, processor: "scheduled_in_memory" });
+    const queueDepthStart = queue.length;
+    log.info({ queueDepthStart }, "flush.start");
     const n = queue.length;
     let a = 0;
     let r = 0;
     let y = 0;
-    for (const item of queue) {
-      const outcome = outcomeFor(item);
-      if (outcome === "accepted") {
-        a += 1;
-        if (identusClient) {
-          const claims: CredentialClaims = {
-            residentStatus: "verified",
-            verificationDate: new Date().toISOString(),
-            dhaReference: item.correlationId,
-          };
-          const holderDID = await identusClient.createHolderDID();
-          const vcResult = await identusClient.issueCredential(holderDID, claims);
-          if (vcResult.status === "issued") {
-            issuedVCs.push({
-              correlationId: item.correlationId,
-              vcId: vcResult.vcId,
-              issuedAt: vcResult.issuedAt,
-            });
+    try {
+      for (const item of queue) {
+        const outcome = outcomeFor(item);
+        if (outcome === "accepted") {
+          a += 1;
+          if (identusClient) {
+            const claims: CredentialClaims = {
+              residentStatus: "verified",
+              verificationDate: new Date().toISOString(),
+              dhaReference: item.correlationId,
+            };
+            const holderDID = await identusClient.createHolderDID();
+            const vcResult = await identusClient.issueCredential(holderDID, claims);
+            if (vcResult.status === "issued") {
+              issuedVCs.push({
+                correlationId: item.correlationId,
+                vcId: vcResult.vcId,
+                issuedAt: vcResult.issuedAt,
+              });
+            }
           }
+        } else if (outcome === "rejected") {
+          r += 1;
+        } else {
+          y += 1;
         }
-      } else if (outcome === "rejected") {
-        r += 1;
-      } else {
-        y += 1;
       }
+    } catch (err) {
+      log.error({ err }, "flush.error");
+      throw err;
     }
     queue.length = 0;
     flushCount += 1;
@@ -227,6 +255,11 @@ export function createScheduledInMemoryProcessor(
     rejected += r;
     retry += y;
     lastFlushAt = new Date().toISOString();
+    const queueDepthEnd = queue.length;
+    log.info(
+      { queueDepthEnd, submitted: n, accepted: a, rejected: r, retry: y },
+      "flush.complete",
+    );
     return { submitted: n, accepted: a, rejected: r, retry: y };
   };
 
@@ -240,7 +273,15 @@ export function createScheduledInMemoryProcessor(
     },
     async tick(now = new Date(), identusClient?: IdentusClient) {
       if (queue.length === 0) return null;
-      if (!isWithinWindow(now, config.window)) return null;
+      const withinWindow = isWithinWindow(now, config.window);
+      if (wasWithinWindow === null) wasWithinWindow = withinWindow;
+      if (withinWindow && !wasWithinWindow) {
+        logger.info({ window: config.window }, "offpeak.enter");
+      } else if (!withinWindow && wasWithinWindow) {
+        logger.info({ window: config.window }, "offpeak.exit");
+      }
+      wasWithinWindow = withinWindow;
+      if (!withinWindow) return null;
       return flushQueue(identusClient);
     },
     metrics() {

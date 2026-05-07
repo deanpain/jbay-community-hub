@@ -6,6 +6,7 @@ import {
   type AltronClient,
   type BatchVerificationRequest,
 } from "./client.js";
+import { logger } from "../logger.js";
 
 export interface AltronProcessorConfig {
   apiUrl: string;
@@ -58,8 +59,13 @@ export function createAltronProcessor(config: AltronProcessorConfig): AltronProc
   let rejected = 0;
   let retry = 0;
   let lastFlushAt: string | undefined;
+  let wasWithinWindow: boolean | null = null;
 
   const flush = async (): Promise<{ submitted: number; accepted: number; rejected: number; retry: number }> => {
+    const batchCorrelationId = randomUUID();
+    const log = logger.child({ batchCorrelationId, processor: "altron" });
+    const queueDepthStart = queue.length;
+    log.info({ queueDepthStart }, "flush.start");
     const batchItems = queue.splice(0, config.batchSizeLimit).map((item) => ({
       correlationId: item.correlationId,
       encryptedPayload: item.ciphertext,
@@ -67,16 +73,20 @@ export function createAltronProcessor(config: AltronProcessorConfig): AltronProc
     }));
 
     if (batchItems.length === 0) {
+      log.info({ queueDepthEnd: queue.length }, "flush.empty");
       return { submitted: 0, accepted: 0, rejected: 0, retry: 0 };
     }
 
-    const request: BatchVerificationRequest = {
-      items: batchItems,
-      batchId: randomUUID(),
-      submittedAt: new Date().toISOString(),
-    };
+    const batchId = randomUUID();
+    const request: BatchVerificationRequest = { items: batchItems, batchId, submittedAt: new Date().toISOString() };
 
-    const response = await client.submitBatch(request);
+    let response: Awaited<ReturnType<AltronClient["submitBatch"]>>;
+    try {
+      response = await client.submitBatch(request);
+    } catch (err) {
+      log.error({ err, batchId }, "flush.error");
+      throw err;
+    }
 
     let a = 0;
     let r = 0;
@@ -94,6 +104,11 @@ export function createAltronProcessor(config: AltronProcessorConfig): AltronProc
     retry += y;
     lastFlushAt = response.processedAt;
 
+    const queueDepthEnd = queue.length;
+    log.info(
+      { batchId, queueDepthEnd, submitted: batchItems.length, accepted: a, rejected: r, retry: y },
+      "flush.complete",
+    );
     return { submitted: batchItems.length, accepted: a, rejected: r, retry: y };
   };
 
@@ -106,7 +121,15 @@ export function createAltronProcessor(config: AltronProcessorConfig): AltronProc
     },
     async tick(now = new Date()) {
       if (queue.length === 0) return null;
-      if (!isWithinWindow(now, config.window)) return null;
+      const withinWindow = isWithinWindow(now, config.window);
+      if (wasWithinWindow === null) wasWithinWindow = withinWindow;
+      if (withinWindow && !wasWithinWindow) {
+        logger.info({ window: config.window, processor: "altron" }, "offpeak.enter");
+      } else if (!withinWindow && wasWithinWindow) {
+        logger.info({ window: config.window, processor: "altron" }, "offpeak.exit");
+      }
+      wasWithinWindow = withinWindow;
+      if (!withinWindow) return null;
       return flush();
     },
     metrics() {
