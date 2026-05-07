@@ -1,9 +1,18 @@
 #!/usr/bin/env node
 /**
- * Placeholder until Midnight Compact CLI/tests are wired in CI.
- * Exits 0 so pipeline gates stay green while toolchain lands.
+ * Contracts test runner — vitest with globals.
+ * Replaced the placeholder stub with real Midnight Compact tests.
  */
-process.stdout.write(
-  "[contracts:test] placeholder — replace with compact/midnight test runner\n",
-);
-process.exit(0);
+import { execSync } from 'node:child_process';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+try {
+  execSync('node node_modules/vitest/vitest.mjs run --config vitest.config.ts', {
+    cwd: root,
+    stdio: 'inherit',
+  });
+} catch {
+  process.exit(1);
+}

@@ -35,7 +35,7 @@ pnpm --filter @jbay/mobile start
 ## Documentation
 
 - Architecture overview: [`docs/architecture/overview.md`](docs/architecture/overview.md)
-- ADR 0003 — Lace + Expo + Metro wallet path (spike pending): [`docs/adr/0003-lace-expo-metro-wallet-integration.md`](docs/adr/0003-lace-expo-metro-wallet-integration.md)
+- ADR 0003 — Lace + Expo + Metro wallet path (integration surface added): [`docs/adr/0003-lace-expo-metro-wallet-integration.md`](docs/adr/0003-lace-expo-metro-wallet-integration.md)
 - Lace spike checklist (device + simulator): [`docs/runbooks/lace-spike.md`](docs/runbooks/lace-spike.md)
 - API identity enqueue + job stub (local curl): [`docs/runbooks/api-identity-stub.md`](docs/runbooks/api-identity-stub.md)
 - Catalyst milestones (checkbox + Paperclip IDs): [`docs/catalyst/milestone-checklist.md`](docs/catalyst/milestone-checklist.md)

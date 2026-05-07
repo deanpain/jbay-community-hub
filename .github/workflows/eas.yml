@@ -1,0 +1,49 @@
+name: EAS Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "EAS build profile (development|preview|production)"
+        required: true
+        default: "preview"
+      platform:
+        description: "Platform (ios|android|all)"
+        required: true
+        default: "all"
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  eas-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: EAS build (ios)
+        if: ${{ inputs.platform == 'ios' || inputs.platform == 'all' }}
+        working-directory: apps/mobile
+        run: eas build --platform ios --profile "${{ inputs.profile }}" --non-interactive
+
+      - name: EAS build (android)
+        if: ${{ inputs.platform == 'android' || inputs.platform == 'all' }}
+        working-directory: apps/mobile
+        run: eas build --platform android --profile "${{ inputs.profile }}" --non-interactive

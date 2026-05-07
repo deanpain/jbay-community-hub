@@ -66,7 +66,7 @@ Legacy budget discussions in **ADA** must be **converted to USDM** for submissio
 
 **Paperclip:** [INK-47](http://127.0.0.1:3100/INK/issues/INK-47) · Subtasks INK-72–INK-77 · *Blocked by Phase 3*
 
-- [ ] **P4.1** — QA matrix: devices × networks × Lace builds under test.
+- [x] **P4.1** — QA matrix: devices × networks × Lace builds under test. See [`qa-matrix.md`](qa-matrix.md).
 - [ ] **P4.2** — Regression automation expanded or gaps documented.
 - [ ] **P4.3** — Performance + accessibility pass (bundle budget, a11y smoke).
 - [ ] **P4.4** — [`release-checklist.md`](release-checklist.md) completed with evidence.

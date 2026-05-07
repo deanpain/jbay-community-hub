@@ -20,6 +20,7 @@ import {
 } from "@jbay/shared";
 import { colors } from "@jbay/ui-tokens";
 
+import { createStubsWallet } from "./src/wallet";
 import { ListingDraftModal } from "./src/components/ListingDraftModal";
 import { loadDraftListings, saveDraftListings } from "./src/lib/listingDraftsStorage";
 import { strings } from "./src/i18n";
@@ -33,6 +34,18 @@ export default function App() {
   const [draftsHydrated, setDraftsHydrated] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [formInitial, setFormInitial] = useState<Listing | null>(null);
+  const wallet = useMemo(() => createStubsWallet(), []);
+
+  const onWalletPress = useCallback(async () => {
+    if (wallet.status === "connected") {
+      return;
+    }
+    try {
+      await wallet.connect();
+    } catch {
+      Alert.alert(strings.walletPlaceholderTitle, strings.walletPlaceholderBody);
+    }
+  }, [wallet]);
 
   const pilotName = pilotJeffreysBaySample.displayName;
 
@@ -107,12 +120,12 @@ export default function App() {
           accessibilityRole="button"
           accessibilityLabel={strings.a11yWalletChip}
           hitSlop={12}
-          onPress={() =>
-            Alert.alert(strings.walletPlaceholderTitle, strings.walletPlaceholderBody)
-          }
-          style={styles.walletChip}
+          onPress={onWalletPress}
+          style={[styles.walletChip, wallet.status === "connected" && styles.walletChipConnected]}
         >
-          <Text style={styles.walletChipText}>{strings.walletChipLabel}</Text>
+          <Text style={[styles.walletChipText, wallet.status === "connected" && styles.walletChipTextConnected]}>
+            {wallet.status === "connected" ? strings.walletChipLabelConnected : strings.walletChipLabel}
+          </Text>
         </Pressable>
       </View>
 
@@ -168,6 +181,10 @@ export default function App() {
               <Text style={styles.bodyText}>{detail.proofRequirements}</Text>
             </View>
           ) : null}
+          <View style={styles.subsidyBanner}>
+            <Text style={styles.subsidyLabel}>{strings.dustSubsidyHeading}</Text>
+            <Text style={styles.subsidyText}>{strings.dustSubsidyBody}</Text>
+          </View>
           {detail.source === "draft" ? (
             <View style={styles.draftActions}>
               <Pressable
@@ -270,10 +287,16 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
     backgroundColor: colors.surface,
   },
+  walletChipConnected: {
+    backgroundColor: colors.accent,
+  },
   walletChipText: {
     color: colors.accent,
     fontWeight: "700",
     fontSize: 14,
+  },
+  walletChipTextConnected: {
+    color: colors.background,
   },
   title: {
     color: colors.textPrimary,
@@ -391,6 +414,23 @@ const styles = StyleSheet.create({
   },
   block: {
     gap: 4,
+  },
+  subsidyBanner: {
+    gap: 4,
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: colors.accent,
+    backgroundColor: "rgba(34, 211, 238, 0.08)",
+  },
+  subsidyLabel: {
+    color: colors.textPrimary,
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  subsidyText: {
+    color: colors.textMuted,
+    lineHeight: 20,
   },
   blockLabel: {
     color: colors.textPrimary,

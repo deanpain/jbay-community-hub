@@ -44,3 +44,31 @@ Never persist plaintext DEKs or long-lived private keys in repo/env files.
    - `pnpm --filter identity-worker run dry-run`
 3. Verify no plaintext fields in logs/metrics sinks.
 4. Record rotation/incident actions in Paperclip issue comments.
+
+## Implementation (2026-05-07)
+
+**Files implemented:**
+- `services/identity-worker/src/kms.ts` — KMS abstraction layer with:
+  - `KMSClient` interface (encrypt/decrypt/wrapKey/unwrapKey/getCurrentKeyVersion)
+  - `createKMSClient()` factory (stub + AWS KMS placeholder)
+  - `createEncryptionService()` for envelope encryption
+  - `rotateKey()` for key rotation
+  - `KMSUnavailableError`, `DecryptFailureError` for failure handling
+- `services/identity-worker/src/index.ts` — Updated schema:
+  - `queuedVerificationSchema` now includes `keyVersion` and `wrappedDek`
+  - Exports `KMSConfig`, `EncryptionResult`, KMS utilities
+- `services/identity-worker/src/altron/processor.ts` — Updated to propagate `keyVersion` to batch requests
+
+**Environment variables:**
+```bash
+KMS_KEY_ALIAS=alias/identity-worker-dek
+KMS_KEY_VERSION=v1
+KMS_REGION=af-south-1
+KMS_ENDPOINT=http://localhost:4566
+```
+
+**To enable AWS KMS:**
+```bash
+npm install @aws-sdk/client-kms
+```
+Then update `createAWSKMSClient()` in `src/kms.ts` with real implementation.

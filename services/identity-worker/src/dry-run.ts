@@ -4,16 +4,21 @@ import {
   createScheduledInMemoryProcessor,
   type QueuedVerification,
 } from "./index.js";
+import { createStubIdentusClient } from "./identus/client.js";
 
 function makeSynthetic(n: number): QueuedVerification[] {
   return Array.from({ length: n }, () => ({
     correlationId: randomUUID(),
     createdAt: new Date().toISOString(),
     ciphertext: randomUUID().replaceAll("-", ""),
+    keyVersion: "v1",
+    wrappedDek: randomUUID().replaceAll("-", ""),
+    outcome: "pending" as const,
   }));
 }
 
 async function main(): Promise<void> {
+  const identusClient = createStubIdentusClient();
   const processor = createScheduledInMemoryProcessor({
     window: { startHour: 22, endHour: 5 },
     dryRunOutcomeFor: (item) => {
@@ -28,11 +33,10 @@ async function main(): Promise<void> {
     await processor.enqueue(item);
   }
 
-  // Outside off-peak: no flush.
-  await processor.tick(new Date("2026-05-05T12:00:00Z"));
-  // Inside off-peak: synthetic flush.
-  const res = await processor.tick(new Date("2026-05-05T23:00:00Z"));
+  await processor.tick(new Date("2026-05-05T12:00:00Z"), identusClient);
+  const res = await processor.tick(new Date("2026-05-05T23:00:00Z"), identusClient);
 
+  const vcs = processor.getIssuedVCs();
   process.stdout.write(
     JSON.stringify(
       {
@@ -41,6 +45,8 @@ async function main(): Promise<void> {
         accepted: res?.accepted ?? 0,
         rejected: res?.rejected ?? 0,
         retry: res?.retry ?? 0,
+        vcIssued: vcs.length,
+        vcIds: vcs.map((v) => v.vcId),
         metrics: processor.metrics(),
       },
       null,

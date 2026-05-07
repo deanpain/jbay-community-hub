@@ -1,0 +1,27 @@
+services:
+  - type: worker
+    name: identity-worker
+    runtime: node
+    plan: starter
+    autoDeploy: true
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter identity-worker build
+    startCommand: pnpm --filter identity-worker start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_ENV
+        value: production
+      - key: ALTRON_BASE_URL
+        sync: false
+      - key: ALTRON_USERNAME
+        sync: false
+      - key: ALTRON_PASSWORD
+        sync: false
+      - key: DHA_BASE_URL
+        sync: false
+      - key: DHA_API_KEY
+        sync: false
+      - key: IDENTUS_BASE_URL
+        sync: false
+      - key: IDENTUS_API_KEY
+        sync: false

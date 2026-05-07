@@ -36,7 +36,7 @@ jobs:
       - name: Workspace tests
         run: pnpm test
 
-      - name: Contract tests (placeholder)
+      - name: Contract tests (Compact)
         run: pnpm contracts:test
 
   mobile-build-smoke:

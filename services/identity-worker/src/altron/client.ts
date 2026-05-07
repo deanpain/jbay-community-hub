@@ -1,92 +1,105 @@
-export interface AltronBatchItem {
-  correlationId: string;
-  ciphertext: string;
-  createdAt: string;
+import { z } from "zod";
+
+export const altronBatchItemSchema = z.object({
+  correlationId: z.string().uuid(),
+  encryptedPayload: z.string().min(1),
+  keyVersion: z.string(),
+});
+
+export type AltronBatchItem = z.infer<typeof altronBatchItemSchema>;
+
+export const batchVerificationRequestSchema = z.object({
+  items: z.array(altronBatchItemSchema),
+  batchId: z.string().uuid(),
+  submittedAt: z.string().datetime(),
+});
+
+export type BatchVerificationRequest = z.infer<typeof batchVerificationRequestSchema>;
+
+export const altronResultSchema = z.object({
+  correlationId: z.string().uuid(),
+  status: z.enum(["accepted", "rejected", "retry"]),
+  dhaRef: z.string().optional(),
+});
+
+export type AltronResult = z.infer<typeof altronResultSchema>;
+
+export const batchVerificationResponseSchema = z.object({
+  batchId: z.string().uuid(),
+  results: z.array(altronResultSchema),
+  processedAt: z.string().datetime(),
+});
+
+export type BatchVerificationResponse = z.infer<typeof batchVerificationResponseSchema>;
+
+export interface AltronClient {
+  submitBatch(request: BatchVerificationRequest): Promise<BatchVerificationResponse>;
+  checkHealth(): Promise<boolean>;
 }
 
-export interface AltronBatchRequest {
-  items: AltronBatchItem[];
-  batchId?: string;
-}
-
-export interface AltronBatchResponse {
-  batchId: string;
-  results: Array<{
-    correlationId: string;
-    outcome: "accepted" | "rejected" | "retry";
-    reason?: string;
-  }>;
-  submittedAt: string;
-}
-
-export interface AltronCredentials {
-  apiUrl: string;
-  apiKey: string;
-}
-
-export function getAltronCredentials(): AltronCredentials {
-  return {
-    apiUrl: process.env.ALTRON_API_URL ?? "",
-    apiKey: process.env.ALTRON_API_KEY ?? "",
-  };
-}
-
-export function isSandboxMode(creds: AltronCredentials): boolean {
-  return !creds.apiKey;
-}
-
-export async function submitBatch(
-  creds: AltronCredentials,
-  items: AltronBatchItem[],
-): Promise<AltronBatchResponse> {
-  if (isSandboxMode(creds)) {
-    return sandboxBatchResponse(items);
+export function createAltronClient(apiUrl: string, apiKey: string): AltronClient {
+  if (!apiKey || apiKey === "<sandbox-key>") {
+    return createStubAltronClient();
   }
 
-  const response = await fetch(`${creds.apiUrl}/batch/verify`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${creds.apiKey}`,
+  return {
+    async submitBatch(request: BatchVerificationRequest): Promise<BatchVerificationResponse> {
+      const response = await fetch(`${apiUrl}/batch/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Altron API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return batchVerificationResponseSchema.parse(data);
     },
-    body: JSON.stringify({
-      items: items.map((item) => ({
-        correlationId: item.correlationId,
-        payload: item.ciphertext,
-        timestamp: item.createdAt,
-      })),
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Altron API error: ${response.status} ${response.statusText}`);
-  }
-
-  const data = (await response.json()) as {
-    batchId: string;
-    results: Array<{ correlationId: string; status: string; reason?: string }>;
-  };
-
-  return {
-    batchId: data.batchId,
-    results: data.results.map((r) => ({
-      correlationId: r.correlationId,
-      outcome: r.status as "accepted" | "rejected" | "retry",
-      reason: r.reason,
-    })),
-    submittedAt: new Date().toISOString(),
+    async checkHealth(): Promise<boolean> {
+      const response = await fetch(`${apiUrl}/health`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      return response.ok;
+    },
   };
 }
 
-function sandboxBatchResponse(items: AltronBatchItem[]): AltronBatchResponse {
+export function createStubAltronClient(): AltronClient {
   return {
-    batchId: `sandbox-${Date.now()}`,
-    results: items.map((item) => {
-      const mod = item.correlationId.charCodeAt(0) % 10;
-      if (mod < 7) return { correlationId: item.correlationId, outcome: "accepted" as const };
-      if (mod < 9) return { correlationId: item.correlationId, outcome: "retry" as const };
-      return { correlationId: item.correlationId, outcome: "rejected" as const };
-    }),
-    submittedAt: new Date().toISOString(),
+    async submitBatch(request: BatchVerificationRequest): Promise<BatchVerificationResponse> {
+      const results = request.items.map((item) => {
+        const hash = item.correlationId.charCodeAt(0) % 10;
+        if (hash < 7) {
+          return {
+            correlationId: item.correlationId,
+            status: "accepted" as const,
+            dhaRef: `DHA-${item.correlationId.slice(0, 8)}`,
+          };
+        } else if (hash < 9) {
+          return {
+            correlationId: item.correlationId,
+            status: "retry" as const,
+          };
+        }
+        return {
+          correlationId: item.correlationId,
+          status: "rejected" as const,
+        };
+      });
+
+      return {
+        batchId: request.batchId,
+        results,
+        processedAt: new Date().toISOString(),
+      };
+    },
+    async checkHealth(): Promise<boolean> {
+      return true;
+    },
   };
 }

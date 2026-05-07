@@ -14,6 +14,9 @@ export const en = {
   backToListings: "← Listings",
   scheduleHeading: "Schedule",
   proofHeading: "Proof & credentials",
+  dustSubsidyHeading: "DUST subsidized",
+  dustSubsidyBody:
+    "Verified residents do not pay wallet fuel for normal MLS browsing, posting, or joining actions while the community treasury is above its safety reserve.",
   detailStubNote:
     "Shielded on-chain payloads and Lace connect land with Compact bindings — this screen is mock MLS against shared types.",
   emptyTab:
@@ -25,6 +28,7 @@ export const en = {
   walletPlaceholderBody:
     "Lace is not wired yet. Follow docs/runbooks/lace-spike.md on this machine or in the repo, then update ADR 0003.",
   a11yWalletChip: "Wallet connection status — integration pending",
+  walletChipLabelConnected: "Connected",
   listingAdd: "Add",
   a11yAddListing: "Create a new local draft listing",
   draftBadge: "Local draft",

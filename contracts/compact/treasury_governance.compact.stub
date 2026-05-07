@@ -1,5 +1,195 @@
-// STUB — replace with valid Midnight Compact.
+// STUB — replace with valid Midnight Compact once the toolchain is pinned in CI.
 // Module: treasury_and_governance
-// - Hold communal NIGHT (transparent rules) while shielding individual ballot choices.
-// - Delegate DUST spend so verified residents experience subsidized MLS interactions (self-funding DApp pattern).
-// - Expose auditable tallies + disbursement events without leaking voter linkage.
+// Paperclip: INK-66, INK-67, INK-68
+// ADR: docs/adr/0004-dust-subsidy-and-governance-model.md
+
+// Intent
+// - Hold communal NIGHT under transparent policy rules.
+// - Regenerate / allocate DUST so verified residents experience normal MLS actions as fee-less.
+// - Support confidential ballots with auditable aggregate outcomes.
+// - Emit disbursement events without linking individual voter identity to choices.
+
+export type MlsAction =
+  | "browse_listing"
+  | "view_listing_detail"
+  | "create_local_draft"
+  | "publish_verified_listing"
+  | "join_or_rsvp"
+  | "admin_moderation"
+  | "bulk_partner_import"
+  | "treasury_disbursement";
+
+export type SubsidyDecision = {
+  action: MlsAction;
+  subsidized: boolean;
+  reason:
+    | "verified_resident"
+    | "local_only"
+    | "under_daily_cap"
+    | "treasury_below_reserve"
+    | "emergency_pause"
+    | "requires_governance";
+  projectedDustCost: bigint;
+  remainingResidentDailyCap: bigint;
+  remainingPartnerDailyCap: bigint;
+};
+
+export type TreasuryPolicy = {
+  policyVersion: string;
+  minTreasuryDustReserve: bigint;
+  dailyResidentDustCap: bigint;
+  dailyPartnerDustCap: bigint;
+  emergencySubsidyPause: boolean;
+};
+
+export type GovernanceProposal = {
+  proposalId: string;
+  titleHash: string;
+  summaryHash: string;
+  requestedDustBudget: bigint;
+  requestedNightPolicyChangeHash?: string;
+  quorumRequired: bigint;
+  votingStartsAt: bigint;
+  votingEndsAt: bigint;
+  executionHook: "none" | "update_policy" | "disburse_treasury" | "pause_subsidy";
+};
+
+export type BallotReceipt = {
+  proposalId: string;
+  nullifierHash: string;
+  acceptedAt: bigint;
+};
+
+export type PublicTally = {
+  proposalId: string;
+  yesVotes: bigint;
+  noVotes: bigint;
+  abstainVotes: bigint;
+  quorumMet: boolean;
+  passed: boolean;
+};
+
+export type DisbursementEvent = {
+  proposalId: string;
+  recipientHash: string;
+  dustAmount: bigint;
+  nightAmount: bigint;
+  executedAt: bigint;
+};
+
+export function decideSubsidy(
+  action: MlsAction,
+  isVerifiedResident: boolean,
+  policy: TreasuryPolicy,
+  treasuryDustBalance: bigint,
+  projectedDustCost: bigint,
+  remainingResidentDailyCap: bigint,
+  remainingPartnerDailyCap: bigint,
+): SubsidyDecision {
+  if (action === "create_local_draft") {
+    return {
+      action,
+      subsidized: true,
+      reason: "local_only",
+      projectedDustCost,
+      remainingResidentDailyCap,
+      remainingPartnerDailyCap,
+    };
+  }
+
+  if (!isVerifiedResident) {
+    return {
+      action,
+      subsidized: false,
+      reason: "requires_governance",
+      projectedDustCost,
+      remainingResidentDailyCap,
+      remainingPartnerDailyCap,
+    };
+  }
+
+  if (policy.emergencySubsidyPause) {
+    return {
+      action,
+      subsidized: false,
+      reason: "emergency_pause",
+      projectedDustCost,
+      remainingResidentDailyCap,
+      remainingPartnerDailyCap,
+    };
+  }
+
+  if (treasuryDustBalance - projectedDustCost < policy.minTreasuryDustReserve) {
+    const essential = action === "browse_listing" || action === "view_listing_detail";
+    return {
+      action,
+      subsidized: essential,
+      reason: essential ? "verified_resident" : "treasury_below_reserve",
+      projectedDustCost,
+      remainingResidentDailyCap,
+      remainingPartnerDailyCap,
+    };
+  }
+
+  if (action === "treasury_disbursement") {
+    return {
+      action,
+      subsidized: false,
+      reason: "requires_governance",
+      projectedDustCost,
+      remainingResidentDailyCap,
+      remainingPartnerDailyCap,
+    };
+  }
+
+  if (remainingResidentDailyCap < projectedDustCost || remainingPartnerDailyCap < projectedDustCost) {
+    return {
+      action,
+      subsidized: false,
+      reason: "under_daily_cap",
+      projectedDustCost,
+      remainingResidentDailyCap,
+      remainingPartnerDailyCap,
+    };
+  }
+
+  return {
+    action,
+    subsidized: true,
+    reason: "verified_resident",
+    projectedDustCost,
+    remainingResidentDailyCap,
+    remainingPartnerDailyCap,
+  };
+}
+
+export function submitConfidentialBallot(
+  proposalId: string,
+  residentCredentialNullifierHash: string,
+  acceptedAt: bigint,
+): BallotReceipt {
+  return {
+    proposalId,
+    nullifierHash: residentCredentialNullifierHash,
+    acceptedAt,
+  };
+}
+
+export function tallyProposal(
+  proposalId: string,
+  yesVotes: bigint,
+  noVotes: bigint,
+  abstainVotes: bigint,
+  quorumRequired: bigint,
+): PublicTally {
+  const total = yesVotes + noVotes + abstainVotes;
+  const quorumMet = total >= quorumRequired;
+  return {
+    proposalId,
+    yesVotes,
+    noVotes,
+    abstainVotes,
+    quorumMet,
+    passed: quorumMet && yesVotes > noVotes,
+  };
+}

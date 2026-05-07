@@ -9,7 +9,7 @@ This directory holds **Community Hub** smart-contract sources for the Midnight n
 
 ## Toolchain
 
-Wire the official Midnight **Compact** compiler, proof tooling, and network endpoints per current Midnight documentation. Replace stub suffixes with real `.compact` modules and swap `contracts/scripts/test-placeholder.mjs` for the canonical test invocation.
+Wire the official Midnight **Compact** compiler, proof tooling, and network endpoints per current Midnight documentation. Replace stub suffixes with real `.compact` modules and run tests via `pnpm contracts:test` (vitest with globals).
 
 ## Bulletin Board Pattern
 

@@ -1,53 +1,123 @@
 import { randomUUID } from "node:crypto";
 
 import {
-  createScheduledInMemoryProcessor,
-  type QueuedVerification,
-  type BatchResult,
-} from "../index.js";
-import { getAltronCredentials, isSandboxMode, submitBatch } from "./client.js";
-
-export { getAltronCredentials, isSandboxMode };
-export type { AltronCredentials } from "./client.js";
+  createAltronClient,
+  createStubAltronClient,
+  type AltronClient,
+  type BatchVerificationRequest,
+} from "./client.js";
 
 export interface AltronProcessorConfig {
+  apiUrl: string;
+  apiKey: string;
+  batchSizeLimit: number;
   window: { startHour: number; endHour: number };
-  batchSizeLimit?: number;
 }
 
-export function createAltronProcessor(config: AltronProcessorConfig) {
-  const batchSizeLimit = config.batchSizeLimit ?? 100;
+export interface QueuedItem {
+  correlationId: string;
+  createdAt: string;
+  ciphertext: string;
+  keyVersion: string;
+  wrappedDek: string;
+}
 
-  const processor = createScheduledInMemoryProcessor({
-    window: config.window,
-    dryRunOutcomeFor: (item: QueuedVerification) => {
-      const mod = item.correlationId.charCodeAt(0) % 10;
-      if (mod < 7) return "accepted";
-      if (mod < 9) return "retry";
-      return "rejected";
-    },
-  });
+export interface AltronProcessor {
+  enqueue(item: QueuedItem): Promise<void>;
+  flushPendingBatch(): Promise<{ submitted: number; accepted: number; rejected: number; retry: number }>;
+  tick(now?: Date): Promise<{ submitted: number; accepted: number; rejected: number; retry: number } | null>;
+  metrics(): {
+    queueDepth: number;
+    flushCount: number;
+    lastSubmitted: number;
+    accepted: number;
+    rejected: number;
+    retry: number;
+    lastFlushAt?: string;
+  };
+}
+
+function isWithinWindow(now: Date, window: { startHour: number; endHour: number }): boolean {
+  const hour = now.getHours();
+  if (window.startHour === window.endHour) return true;
+  if (window.startHour < window.endHour) {
+    return hour >= window.startHour && hour < window.endHour;
+  }
+  return hour >= window.startHour || hour < window.endHour;
+}
+
+export function createAltronProcessor(config: AltronProcessorConfig): AltronProcessor {
+  const client: AltronClient = config.apiKey
+    ? createAltronClient(config.apiUrl, config.apiKey)
+    : createStubAltronClient();
+
+  const queue: QueuedItem[] = [];
+  let flushCount = 0;
+  let lastSubmitted = 0;
+  let accepted = 0;
+  let rejected = 0;
+  let retry = 0;
+  let lastFlushAt: string | undefined;
+
+  const flush = async (): Promise<{ submitted: number; accepted: number; rejected: number; retry: number }> => {
+    const batchItems = queue.splice(0, config.batchSizeLimit).map((item) => ({
+      correlationId: item.correlationId,
+      encryptedPayload: item.ciphertext,
+      keyVersion: item.keyVersion,
+    }));
+
+    if (batchItems.length === 0) {
+      return { submitted: 0, accepted: 0, rejected: 0, retry: 0 };
+    }
+
+    const request: BatchVerificationRequest = {
+      items: batchItems,
+      batchId: randomUUID(),
+      submittedAt: new Date().toISOString(),
+    };
+
+    const response = await client.submitBatch(request);
+
+    let a = 0;
+    let r = 0;
+    let y = 0;
+    for (const result of response.results) {
+      if (result.status === "accepted") a += 1;
+      else if (result.status === "rejected") r += 1;
+      else y += 1;
+    }
+
+    flushCount += 1;
+    lastSubmitted = batchItems.length;
+    accepted += a;
+    rejected += r;
+    retry += y;
+    lastFlushAt = response.processedAt;
+
+    return { submitted: batchItems.length, accepted: a, rejected: r, retry: y };
+  };
 
   return {
-    ...processor,
-    async flushToAltron(): Promise<BatchResult> {
-      const queue = (processor as unknown as { queue: QueuedVerification[] }).queue;
-      if (queue.length === 0) {
-        return { submitted: 0, accepted: 0, rejected: 0, retry: 0 };
-      }
-
-      const creds = getAltronCredentials();
-      if (isSandboxMode(creds)) {
-        return processor.flushPendingBatch();
-      }
-
-      const batch = queue.splice(0, batchSizeLimit);
-      const response = await submitBatch(creds, batch);
+    async enqueue(item) {
+      queue.push(item);
+    },
+    async flushPendingBatch() {
+      return flush();
+    },
+    async tick(now = new Date()) {
+      if (queue.length === 0) return null;
+      if (!isWithinWindow(now, config.window)) return null;
+      return flush();
+    },
+    metrics() {
       return {
-        submitted: response.results.length,
-        accepted: response.results.filter((r) => r.outcome === "accepted").length,
-        rejected: response.results.filter((r) => r.outcome === "rejected").length,
-        retry: response.results.filter((r) => r.outcome === "retry").length,
+        queueDepth: queue.length,
+        flushCount,
+        lastSubmitted,
+        accepted,
+        rejected,
+        retry,
+        lastFlushAt,
       };
     },
   };
