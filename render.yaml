@@ -4,12 +4,13 @@
 # Uses your existing Render account (same as Design QA Engine)
 
 services:
-  - type: web
+  - type: worker
     name: jbay-identity-worker
     runtime: docker
     repo: https://github.com/deanpain/jbay-community-hub.git
-    rootDir: services/identity-worker
+    rootDir: .
     dockerfilePath: services/identity-worker/Dockerfile
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -23,4 +24,3 @@ services:
         sync: false
       - key: IDENTUS_API_KEY
         sync: false
-    healthCheckPath: /health
