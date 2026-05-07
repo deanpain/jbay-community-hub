@@ -1,0 +1,11 @@
+environment                = "dev"
+identity_worker_plan       = "starter"
+log_level                  = "debug"
+dha_batch_endpoint         = "https://api.altron.co.za/sandbox/batch"
+dha_live_endpoint          = "https://api.altron.co.za/sandbox/live"
+altron_sandbox_enabled     = true
+dha_api_key_secret         = "set-via-render-dashboard"
+altron_api_key_secret      = "set-via-render-dashboard"
+identus_api_key_secret     = "set-via-render-dashboard"
+kms_key_id                 = "set-via-render-dashboard"
+identus_issuer_did         = "did:midnight:dev-placeholder"
