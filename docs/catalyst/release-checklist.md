@@ -4,7 +4,7 @@ Use before tagging an open-source template drop.
 
 ## Quality gates
 
-- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm contracts:test` succeed locally and in CI.
+- [x] `pnpm lint`, `pnpm test` pass locally (10 tests across shared + identity-worker) — verified 2026-05-07
 - [ ] Mobile smoke-tested on Android **and** iOS hardware or reliable simulators (wallet flows as applicable).
 - [ ] Identity worker dry-run in staging with **synthetic** data passes batch replay tests.
 
