@@ -3,7 +3,6 @@
  */
 
 import { createAltronProcessor, getAltronCredentials, isSandboxMode } from "./altron/processor.js";
-import { queuedVerificationSchema } from "./index.js";
 import * as http from "http";
 
 const TICK_INTERVAL_MS = 60_000; // Check every minute
