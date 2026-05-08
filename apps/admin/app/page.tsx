@@ -1,5 +1,5 @@
 import WorkerHealth from './components/WorkerHealth';
-import StatsCards from './components/StatsCards';
+import { StatsCards } from './components/StatsCards';
 import VerificationsFeed from './components/VerificationsFeed';
 
 export default function DashboardPage() {
