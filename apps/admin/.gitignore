@@ -1,5 +1,6 @@
 # Next.js build output
 .next
+tsconfig.tsbuildinfo
 
 # Dependencies
 node_modules
@@ -21,3 +22,6 @@ yarn-error.log*
 # IDE
 .vscode
 .idea
+
+# macOS
+.DS_Store
