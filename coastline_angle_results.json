@@ -1,0 +1,11 @@
+{
+  "coastline_angle_degrees": 175.30827078695762,
+  "aoi": "-34.22,24.8,-34.15,24.88",
+  "method": "SAR backscatter threshold + Sobel gradient",
+  "validation": "Google Earth (0.5m resolution)",
+  "next_steps": [
+    "Integrate with SurfSpot/Wave Vault pipeline",
+    "Add swell/wind matching logic (INK-28)",
+    "Run Jeffreys Bay validation test (INK-29)"
+  ]
+}
